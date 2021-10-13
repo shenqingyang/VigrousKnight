@@ -1,0 +1,4 @@
+repository "j8@ssl://shenqingyang@sh01-plasticscm.unity.cn:8787"
+  path "/"
+    smartbranch "/main/1194346674" 
+     
