@@ -14,8 +14,10 @@ public class changeScen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            if (waittime < 0)
+            if (waittime <= 0)
             {
+            gameObject.GetComponent<Animator>().enabled=false;
+            waittime = 1;
                 SceneManager.LoadScene("1-1");
             }
             else

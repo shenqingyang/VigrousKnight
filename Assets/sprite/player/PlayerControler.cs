@@ -18,6 +18,7 @@ public class PlayerControler : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 60;
+        Time.timeScale = 1;
     }
 
     void Start()
