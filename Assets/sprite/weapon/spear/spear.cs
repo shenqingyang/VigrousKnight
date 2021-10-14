@@ -21,32 +21,7 @@ public class spear : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (healthBar.health > 0)
-        {
-            if (goblin.health > 0)
-            {
-                if (goblin.distance >= 6f)
-                {
-                    transform.localEulerAngles = new Vector3(0, 0, 0);
-                }
-                else
-                {
-                    ToPlayer();
-                    if (goblin.distance <= 2f)
-                    {
-                        if (attackTime <= 0)
-                        {
-                            Attack();
-                            attackTime = 2;
-                        }
-                        else
-                        {
-                            attackTime -= Time.deltaTime;
-                        }
-                    }
-                }
-            }
-        }
+     
     }
 
     //检测攻击玩家
@@ -55,18 +30,15 @@ public class spear : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
-            if (healthBar.health > 0)
-            {
                 //给玩家伤害
                 collision.gameObject.GetComponent<PlayerControler>().TakeDamage(damage);
 
-                //给玩家受伤动画
-                collision.gameObject.GetComponent<PlayerControler>().HurtAnim(ts);
+            //给玩家受伤动画
+            collision.gameObject.GetComponent<PlayerControler>().HurtAnim(ts);
 
-                //生成伤害数值UI
-                damageNum damagable = Instantiate(damageNumUi, collision.gameObject.transform.position, Quaternion.identity).GetComponent<damageNum>();
+            //生成伤害数值UI
+            damageNum damagable = Instantiate(damageNumUi, collision.gameObject.transform.position, Quaternion.identity).GetComponent<damageNum>();
                 damagable.ShowDamageNum(damage);
-            }
         }
 
     }
@@ -98,4 +70,10 @@ public class spear : MonoBehaviour
     {
         coll.enabled = false;
     }
+
+    public void Remake()
+    {
+        transform.localEulerAngles = new Vector3(0, 0, 0);
+    }
+
 }

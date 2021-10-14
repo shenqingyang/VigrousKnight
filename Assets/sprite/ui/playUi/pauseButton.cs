@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class pause : MonoBehaviour
+public class pauseButton : MonoBehaviour
 {
     public GameObject pauseUi;
     // Start is called before the first frame update
@@ -14,10 +14,13 @@ public class pause : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (healthBar.health > 0)
         {
-            Time.timeScale = 0;
-            pauseUi.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Time.timeScale = 0;
+                pauseUi.SetActive(true);
+            }
         }
     }
     public void PauseUi()

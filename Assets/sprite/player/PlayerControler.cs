@@ -8,12 +8,15 @@ public class PlayerControler : MonoBehaviour
     public Rigidbody2D rb;
     public Animator anim;
     public float speed;
-    private bool ishurt;
+    public static bool ishurt;
     public Animator camAnim;
     private Renderer thisrender;
-    private float shildtime=1f;
     private float hurtTime = 0.3f;
-    // Start is called before the first frame update
+    public GameObject dieUi;
+    public GameObject normalUi;
+    private float dietime=2;
+        // Start is called before the first frame update
+
 
     private void Awake()
     {
@@ -41,9 +44,15 @@ public class PlayerControler : MonoBehaviour
         {
             anim.SetBool("die", true);
             rb.drag = 1;
-            if (gameObject.GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+            if (dietime<=0)
             {
-                gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                dieUi.SetActive(true);
+                normalUi.SetActive(false);
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                dietime -= Time.deltaTime;
             }
         }
     }
@@ -95,11 +104,6 @@ public class PlayerControler : MonoBehaviour
             transform.localScale = new Vector3(1, 1, 1);
         }
 
-        //人物静止使增加盾牌值
-        if (horizontal == 0 && vertical == 0)
-        {
-            AddShild();
-        }
     }
 
     //切换动画
@@ -122,19 +126,6 @@ public class PlayerControler : MonoBehaviour
 
     }
 
-    //停止移动时增加盾牌值
-    void AddShild()
-    {
-        if (shildBar.shild < shildBar.max && healthBar.health > 0)
-        {
-            shildtime -= Time.deltaTime;
-            if (shildtime <= 0)
-            {
-                shildBar.shild += 1;
-                shildtime = 1.0f;
-            }
-        }
-    }
 
     //player受到伤害
     public void TakeDamage(int damage)

@@ -28,4 +28,9 @@ public class damageNum : MonoBehaviour
     {
         text.text = damage.ToString();
     }
+
+    //调用
+    ////生成伤害数值UI
+    //damageNum damagable = Instantiate(damageNumUi, collision.gameObject.transform.position, Quaternion.identity).GetComponent<damageNum>();
+    //damagable.ShowDamageNum(damage);
 }

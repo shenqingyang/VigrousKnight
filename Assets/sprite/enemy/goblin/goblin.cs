@@ -7,11 +7,13 @@ public class goblin : MonoBehaviour
     public static int health=5;
     public float speed;
     public float speedrun;
+    public GameObject weapon;
     public Transform player;
     public Animator anim;
     public Rigidbody2D rb;
     private bool ishurt;
     private float hurtTime = 0.3f;
+    public float attacttime;
 
 
     public Vector2 moveDir;
@@ -29,6 +31,7 @@ public class goblin : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
             if (health > 0)
             {
                 if (!ishurt)
@@ -69,6 +72,8 @@ public class goblin : MonoBehaviour
         distance = Vector2.Distance(transform.position, player.position);
         if (distance > 8f)
         {
+            weapon.GetComponent<spear>().Remake();
+
             //向随机生成的坐标移动
             transform.position = Vector2.MoveTowards(transform.position, moveDir, speed * Time.deltaTime);
             if (moveTime > 0)
@@ -95,16 +100,30 @@ public class goblin : MonoBehaviour
             }
             moveTime -= Time.deltaTime;
         }
-        else if (distance <= 8f && distance >= 1.8f)//向玩家移动
+        else if (distance <= 8f )//向玩家移动
         {
             if (healthBar.health > 0)
             {
+                if (distance > 1.8f)
+            {
+                weapon.GetComponent<spear>().ToPlayer();
                 moveDir = new Vector2(player.position.x, player.position.y);
                 transform.position = Vector2.MoveTowards(transform.position, moveDir, speedrun * Time.deltaTime);
             }
-            else
-            {
-                moveDir = transform.position;
+
+                if (distance <= 2.5f)
+                {
+                    if (attacttime <= 0)
+                    {
+                        weapon.GetComponent<spear>().Attack();
+                        attacttime = 2;
+                    }
+                    else
+                    {
+                        attacttime -= Time.deltaTime;
+                    }
+                }
+
             }
         }
     }

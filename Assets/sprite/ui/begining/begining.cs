@@ -5,14 +5,17 @@ using UnityEngine;
 public class begining : MonoBehaviour
 {
     public GameObject gate;
+    public GameObject newgame;
+    public GameObject start;
+    public GameObject scarf;
 
     private void Awake()
     {
         Time.timeScale = 1;
+        newgame.SetActive(false);
     }
     private void Start()
     {
-        gate.SetActive(false);
     }
     private void FixedUpdate()
     {
@@ -22,11 +25,17 @@ public class begining : MonoBehaviour
         }
     }
     // Start is called before the first frame update
-    public void StartGame()
+    public void StartG()
     {
-        gate.SetActive(true);
-        gameObject.SetActive(false);
+        newgame.SetActive(true);
+        scarf.SetActive(true);
+        start.SetActive(false);
     }
     
+    public void NewGame()
+    {
+        gate.SetActive(true);
+        transform.gameObject.SetActive(false);
+    }
 
         }

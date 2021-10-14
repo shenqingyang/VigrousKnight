@@ -13,7 +13,7 @@ public class healthBar : MonoBehaviour
     void Start()
     {
         healthbar = GetComponent<Image>();
-        health = 4;
+        health = max;
     }
 
     // Update is called once per frame
