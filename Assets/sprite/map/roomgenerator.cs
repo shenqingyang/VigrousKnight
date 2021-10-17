@@ -7,58 +7,77 @@ public class roomgenerator : MonoBehaviour
 {
     public enum Direction { up, down, left, right };
     public Direction dir;
-    private GameObject startroom;
-    private List<GameObject> farrooms = new List<GameObject>();
-    private List<GameObject> lessfar = new List<GameObject>();
-    private List<GameObject> oneway = new List<GameObject>();
+    private static room startroom;
+    private static room endroom;
+    private List<room> farrooms = new List<room>();
+    private List<room> lessfar = new List<room>();
+    private List<room> oneway = new List<room>();
+    private List<GameObject> wallnum = new List<GameObject>();
     public int maxstep;
+    public  static Vector2 startposition;
+
 
     [Header("房间信息")]
     public GameObject roomprefab;
     public int roomnumber;
-    public Color startColor, endColor;
+
     [Header("位置控制")]
     public Transform generatorPoint;
-    public static float x, y;
+    public static float x=43f, y= 41.5f;
     public List<room> rooms = new List<room>();
     public LayerMask roomlayer;
+
+
+    public wall wall;
+    [Header("装饰")]
+    public Decoration decoration;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        //随机生成地图
+        CreatMap();
 
+        startroom = oneway[Random.Range(0, oneway.Count)];
+        startposition = startroom.gameObject.transform.position;
+        oneway.Clear();
 
-        for (int i = 1; i < roomnumber; i++)
+        //以初始地图为基准重新计算每个地图到达初始地图的距离
+        foreach (var room in rooms)
         {
-            rooms.Add(Instantiate(roomprefab, generatorPoint.position, Quaternion.identity).GetComponent<room>());
-            Changepoint();
+            room.UpdateRoom(startroom.transform.position.x, startroom.transform.position.y);
         }
-
-        rooms[0].gameObject.GetComponent<SpriteRenderer>().color = startColor;
-        startroom = rooms[0].gameObject;
+        
+        //找到一个距离初始点最远的且只有一个通道的地图作为终点
+        Findendroom();
 
         foreach (var room in rooms)
         {
-
-            if (room.transform.position.sqrMagnitude > startroom.transform.position.sqrMagnitude)
-            {
-                startroom = room.gameObject;
-
-            }
-            SetRoom(room, room.transform.position);
+            room.coll.enabled = false;
         }
-        startroom.gameObject.GetComponent<SpriteRenderer>().color = endColor;
+
+        PlayerControler.tostartroom = true;
+
+        for(int i = 0; i < oneway.Count; i++)
+        {
+            rooms.Remove(oneway[i]);
+        }
+
+        CreateDecoration();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            SceneManager.LoadScene("test"); 
+
+        if (Input.GetKeyDown(KeyCode.P)){
+            SceneManager.LoadScene(2);
         }
+
     }
 
+
+    //改变坐标位置
     public void Changepoint()
     {
 
@@ -83,9 +102,11 @@ public class roomgenerator : MonoBehaviour
                     break;
 
             }
-        } while (Physics2D.OverlapCircle(generatorPoint.position, 0.2f, roomlayer));
+        } while (Physics2D.OverlapCircle(generatorPoint.position, 0.2f, roomlayer));//如果当前位置有地图，换一个位置
     }
 
+
+    //检测地图周围有无其他地图，从而开关通道
     public void SetRoom(room room,Vector3 position)
     {
         room.up = Physics2D.OverlapCircle(position + new Vector3(0, y, 0), 0.2f, roomlayer);
@@ -93,39 +114,170 @@ public class roomgenerator : MonoBehaviour
         room.left = Physics2D.OverlapCircle(position + new Vector3(-x, 0, 0), 0.2f, roomlayer);
         room.right = Physics2D.OverlapCircle(position + new Vector3(x, 0, 0), 0.2f, roomlayer);
 
-        room.UpdateRoom();
+        room.UpdateRoom(0,0);
+
+        switch (room.passagenum)
+        {
+            case 1:
+                if (room.up)
+                    wallnum.Add(Instantiate(wall.one_up,room.gameObject.transform.position,Quaternion.identity));
+                if (room.down)
+                    wallnum.Add(Instantiate(wall.one_down, room.gameObject.transform.position, Quaternion.identity));
+                if (room.right)
+                    wallnum.Add(Instantiate(wall.one_right, room.gameObject.transform.position, Quaternion.identity));
+                if (room.left)
+                    wallnum.Add(Instantiate(wall.one_left, room.gameObject.transform.position, Quaternion.identity));
+                break;
+
+            case 2:
+                if(room.up&&room.down)
+                    wallnum.Add(Instantiate(wall.two_up_down, room.gameObject.transform.position, Quaternion.identity));
+                if (room.up && room.left)
+                    wallnum.Add(Instantiate(wall.two_up_left, room.gameObject.transform.position, Quaternion.identity));
+                if (room.up && room.right)
+                    wallnum.Add(Instantiate(wall.two_up_right, room.gameObject.transform.position, Quaternion.identity));
+                if (room.left && room.down)
+                    wallnum.Add(Instantiate(wall.two_down_left, room.gameObject.transform.position, Quaternion.identity));
+                if (room.right && room.down)
+                    wallnum.Add(Instantiate(wall.two_down_right, room.gameObject.transform.position, Quaternion.identity));
+                if (room.left && room.right)
+                    wallnum.Add(Instantiate(wall.two_right_left, room.gameObject.transform.position, Quaternion.identity));
+                break;
+
+            case 3:
+                    if(room.up&&room.down&&room.left)
+                         wallnum.Add(Instantiate(wall.three_up_down_left, room.gameObject.transform.position, Quaternion.identity));
+                if (room.up && room.down && room.right)
+                    wallnum.Add(Instantiate(wall.three_up_down_right, room.gameObject.transform.position, Quaternion.identity));
+                if (room.right && room.down && room.left)
+                    wallnum.Add(Instantiate(wall.three_right_left_down, room.gameObject.transform.position, Quaternion.identity));
+                if (room.up && room.right && room.left)
+                    wallnum.Add(Instantiate(wall.three_right_left_up, room.gameObject.transform.position, Quaternion.identity));
+                break;
+
+            case 4:
+                wallnum.Add(Instantiate(wall.four_up_down_left_right, room.gameObject.transform.position, Quaternion.identity));
+                break;
+        }
+
     }
 
-    public void Findfirstroom()
+
+    public void Findendroom()
     {
+        //遍历地图，找出与初始地图的最大距离
         for (int i = 0; i < rooms.Count; i++)
         {
-            if (rooms[i].step>maxstep)
+            if (rooms[i].step > maxstep)
             {
                 maxstep = rooms[i].step;
             }
-
-            foreach(var room in rooms)
+        }
+        //遍历链表，向最大距离数与次大距离数链表中加入地图
+        foreach (var room in rooms)
             {
-                if (room.step==maxstep)
+            if (room.step ==maxstep)
                 {
-                    farrooms.Add(room.gameObject);
+                    farrooms.Add(room);
                 }
 
                 if (room.step == maxstep - 1)
                 {
-                    lessfar.Add(room.gameObject);
+                    lessfar.Add(room);
                 }
             }
-
-            for (int i = 0; i < farrooms.Count; i++)
+        //向单通道链表中加入地图
+        for (int i = 0; i < farrooms.Count; i++)
             {
                 if (farrooms[i].GetComponent<room>().passagenum == 1)
                     oneway.Add(farrooms[i]);
-
+            }
+            for (int i = 0; i < lessfar.Count; i++)
+            {
+                if (lessfar[i].GetComponent<room>().passagenum == 1)
+                    oneway.Add(lessfar[i]);
             }
 
+            endroom = oneway[Random.Range(0, oneway.Count)];
+
+        oneway.Remove(endroom);
+        oneway.Remove(startroom);
+
         }
+
+    //生成地图
+    public void CreatMap()
+    {
+
+        for (int i = 0; i < roomnumber; i++)
+        {
+            rooms.Add(Instantiate(roomprefab, generatorPoint.position, Quaternion.identity).GetComponent<room>());
+            Changepoint();
+        }
+
+        //计算每个地图到达初始点的位置及通道数
+        foreach (var room in rooms)
+        {
+
+            SetRoom(room, room.transform.position);
+        }
+
+        //找到所有通道数为1的地图并加入到链表中
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].GetComponent<room>().passagenum == 1)
+            {
+                oneway.Add(rooms[i]);
+            }
+        }
+
+
+        if (oneway.Count < 3)
+        {
+
+            //清空链表
+            oneway.Clear();
+            foreach (var room in rooms)
+            {
+                Destroy(room.gameObject);
+            }
+
+            rooms.Clear();
+
+            foreach (var wall in wallnum)
+            {
+                Destroy(wall.gameObject);
+            }
+
+            wallnum.Clear();
+
+            CreatMap();
+
+        }
+
     }
 
+    public void CreateDecoration()
+    {
+        Instantiate(decoration.gate, endroom.transform.position, Quaternion.identity);
+
+    }
+
+}
+
+
+    [System.Serializable]
+
+public class wall
+{
+    public GameObject one_up, one_down, one_left, one_right,
+        two_up_left, two_up_right, two_up_down, two_right_left, two_down_left, two_down_right,
+        three_up_down_left, three_up_down_right, three_right_left_down, three_right_left_up,
+        four_up_down_left_right;
+}
+
+[System.Serializable]
+public class Decoration {
+
+    public GameObject gate;
 }

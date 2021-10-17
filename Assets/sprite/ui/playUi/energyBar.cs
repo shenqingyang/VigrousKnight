@@ -7,19 +7,20 @@ public class energyBar : MonoBehaviour
 {
     public Text text;
     public static int energy;
-    public static int max=200;
     private Image energybar;
     // Start is called before the first frame update
     void Start()
     {
+        energy = PlayerControler.maxenergy;
+        DontDestroyOnLoad(this);
         energybar = GetComponent<Image>();
-        energy = max;
     }
 
     // Update is called once per frame
     void Update()
     {
-        energybar.fillAmount = (float)energy / (float)max;
-        text.text = energy.ToString() + "/" + max.ToString();
+        energybar.fillAmount = (float)energy / (float)PlayerControler.maxenergy;
+        text.text = energy.ToString() + "/" +PlayerControler.maxenergy.ToString();
     }
+
 }

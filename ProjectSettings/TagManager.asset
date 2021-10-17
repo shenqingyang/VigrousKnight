@@ -8,6 +8,10 @@ TagManager:
   - player
   - enemy
   - weapon
+  - playUi
+  - map
+  - bullet
+  - wall
   layers:
   - Default
   - TransparentFX
@@ -17,12 +21,12 @@ TagManager:
   - UI
   - map
   - passage
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - wall
+  - door
+  - object
+  - weapon
+  - enemy
+  - player
   - 
   - 
   - 
@@ -45,15 +49,30 @@ TagManager:
   - name: background
     uniqueID: 1157665215
     locked: 0
+  - name: map
+    uniqueID: 2892943747
+    locked: 0
+  - name: wall
+    uniqueID: 120586605
+    locked: 0
+  - name: door
+    uniqueID: 3636626725
+    locked: 0
   - name: object
     uniqueID: 2446706163
     locked: 0
   - name: enemy
     uniqueID: 2813336285
     locked: 0
+  - name: player
+    uniqueID: 912087401
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: UI
     uniqueID: 1661563801
+    locked: 0
+  - name: animation
+    uniqueID: 2828112223
     locked: 0

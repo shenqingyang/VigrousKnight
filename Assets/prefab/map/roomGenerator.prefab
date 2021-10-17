@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6104110688735213273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6104110688735213272}
+  m_Layer: 0
+  m_Name: point
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6104110688735213272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6104110688735213273}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6104110689543511193}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6104110689543511191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6104110689543511193}
+  - component: {fileID: 6104110689543511190}
+  m_Layer: 0
+  m_Name: roomGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6104110689543511193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6104110689543511191}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 6104110688735213272}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6104110689543511190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6104110689543511191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a7c26d1153282a428250aeba76dcaa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dir: 0
+  maxstep: 0
+  roomprefab: {fileID: 7619956342598575387, guid: 59d766ad4163aa04dadd40229636fff8, type: 3}
+  roomnumber: 6
+  generatorPoint: {fileID: 6104110688735213272}
+  rooms: []
+  roomlayer:
+    serializedVersion: 2
+    m_Bits: 64
+  wall:
+    one_up: {fileID: 7986799022152145785, guid: e1022bb5f48363e428ec74bdbc5f50dd, type: 3}
+    one_down: {fileID: 1631965692329395482, guid: ba645a69ac0d8ce498ae4cac0d744990, type: 3}
+    one_left: {fileID: 2545976543339405265, guid: a356e6ae63169b840a90decb8317574e, type: 3}
+    one_right: {fileID: 6066444517596487410, guid: 8cedf8a37bc1c7c4a8fb3ada18766ae4, type: 3}
+    two_up_left: {fileID: 4305468502477560395, guid: ae3e4610b9e65f5499297d9882d6a470, type: 3}
+    two_up_right: {fileID: 253323865662423177, guid: 0fecc9c918b357849bb2e5934053eaa7, type: 3}
+    two_up_down: {fileID: 6794390207142480045, guid: 3572bf47da44af04ca97f9b404ac0bae, type: 3}
+    two_right_left: {fileID: 2145116290360895427, guid: bcea05fc1135922478bfb5ef9a7c346e, type: 3}
+    two_down_left: {fileID: 1256163367113522337, guid: 83935d11a80b62c4085cc09731b4ceea, type: 3}
+    two_down_right: {fileID: 3809902946006050569, guid: 4341b98ece6a91c4ca37cd15720cbefa, type: 3}
+    three_up_down_left: {fileID: 8661455007033588581, guid: 18268d266c0e84e4a96e37afdc0b0f9f, type: 3}
+    three_up_down_right: {fileID: 4825792868639460806, guid: 036d00160877b0545a6012c6761a08c9, type: 3}
+    three_right_left_down: {fileID: 2496158389472989099, guid: a78368a843abd304ab3d6fb4e57569ea, type: 3}
+    three_right_left_up: {fileID: 3170339221801839122, guid: 46094bd8a24797b408198b1065d0b1a4, type: 3}
+    four_up_down_left_right: {fileID: 142791813328477367, guid: 3c22ab05b14d4aa4fa77d59181e6107f, type: 3}
+  decoration:
+    gate: {fileID: 7195008370770851227, guid: 82039e4ac28fbcb4ea15c8e56b512062, type: 3}

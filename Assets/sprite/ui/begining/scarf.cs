@@ -15,10 +15,23 @@ public class scarf : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (color <= 1)
+        if (newButton.startup)
         {
-            color += Time.deltaTime;
-            gameObject.GetComponent<Image>().color = new Color(255, 255, 255, color);
+            if (color <= 1)
+            {
+                color += Time.deltaTime*3f;
+                gameObject.GetComponent<Image>().color = new Color(255, 255, 255, color);
+            }
         }
+
+        if (newButton.startdown)
+        {
+            if (color >= 0)
+            {
+                color -= Time.deltaTime*3f;
+                gameObject.GetComponent<Image>().color = new Color(255, 255, 255, color);
+            }
+        }
+
     }
 }

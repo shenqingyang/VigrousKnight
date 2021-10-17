@@ -7,35 +7,27 @@ public class shildBar : MonoBehaviour
 {
     public Text text;
     public static int shild;
-    public static int max = 5;
     private Image shildbar;
-    private float shildtime=1;
+    public  float shildtime=1;
     public float waittime;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        shild = PlayerControler.maxshild;
+        DontDestroyOnLoad(this);
         shildbar = GetComponent<Image>();
-        shild = max;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        shildbar.fillAmount = (float)shild / (float)max;
-        text.text = shild.ToString() + "/" + max.ToString();
-        if (PlayerControler.ishurt)
-        {
-            waittime = 3;
-        }
-        if (waittime <= 0)
+        shildbar.fillAmount = (float)shild / (float)PlayerControler.maxshild;
+        text.text = shild.ToString() + "/" + PlayerControler.maxshild.ToString();
+        if (healthBar.health > 0)
         {
             AddShild();
-        }
-        else
-        {
-            waittime -= Time.deltaTime;
         }
 
             }
@@ -43,14 +35,32 @@ public class shildBar : MonoBehaviour
     //∂‹≈∆÷µ
     void AddShild()
     {
-        if (shild < max && healthBar.health > 0)
+
+        if (PlayerControler.ishurt)
         {
-            shildtime -= Time.deltaTime;
-            if (shildtime <= 0)
+            waittime = 3;
+        }
+        if (waittime <= 0)
+        {
+
+            if (shild < PlayerControler.maxshild)
             {
-                shild += 1;
-                shildtime = 1.0f;
+                if (shildtime <= 0)
+                {
+                    shild += 1;
+                    shildtime = 1.0f;
+                }
+                else
+                {
+                    shildtime -= Time.deltaTime;
+                }
             }
         }
+        else
+        {
+            waittime -= Time.deltaTime;
+        }
+
+
     }
 }

@@ -9,7 +9,6 @@ public class changeScen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -18,11 +17,14 @@ public class changeScen : MonoBehaviour
             if (waittime <= 0)
             {
             waittime = 1;
-            SceneManager.LoadScene("1-1");
+            normalUi.Ui.SetActive(true);
+            SceneManager.LoadScene(normalUi.scen+1);
+
             }
             else
             {
                 waittime -= Time.deltaTime;
             }
-        }
+
     }
+}

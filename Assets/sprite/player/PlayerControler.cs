@@ -5,16 +5,18 @@ using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour
 {
+    public static bool tostartroom;
+    public static int maxhealth=6;
+    public static int maxenergy=180;
+    public static int maxshild=5;
+
     public Rigidbody2D rb;
     public Animator anim;
     public float speed;
     public static bool ishurt;
-    public Animator camAnim;
-    private Renderer thisrender;
+    public Animator camAni;
     private float hurtTime = 0.3f;
-    public GameObject dieUi;
-    public GameObject normalUi;
-    private float dietime=2;
+    public static Vector3 position;
         // Start is called before the first frame update
 
 
@@ -26,12 +28,18 @@ public class PlayerControler : MonoBehaviour
 
     void Start()
     {
-        thisrender = GetComponent<Renderer>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (tostartroom)
+        {
+            transform.position = roomgenerator.startposition;
+            tostartroom = false;
+        }
+
+        position = transform.position;
         if (healthBar.health > 0)
         {
             if (!ishurt)
@@ -44,16 +52,6 @@ public class PlayerControler : MonoBehaviour
         {
             anim.SetBool("die", true);
             rb.drag = 1;
-            if (dietime<=0)
-            {
-                dieUi.SetActive(true);
-                normalUi.SetActive(false);
-                gameObject.SetActive(false);
-            }
-            else
-            {
-                dietime -= Time.deltaTime;
-            }
         }
     }
 
@@ -175,7 +173,7 @@ public class PlayerControler : MonoBehaviour
         }
 
         //镜头晃动
-        camAnim.SetTrigger("shake");
+        cameraControl.hurt = true;
 
         //受伤动画
         anim.SetTrigger("hurt");

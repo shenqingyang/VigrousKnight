@@ -4,41 +4,53 @@ using UnityEngine;
 
 public class goblin : MonoBehaviour
 {
+    public  Vector2 roomposition;
     public static int health=5;
     public float speed;
     public float speedrun;
     public GameObject weapon;
-    public Transform player;
     public Animator anim;
     public Rigidbody2D rb;
     private bool ishurt;
-    private float hurtTime = 0.3f;
-    public float attacttime;
+    private float hurtTime=0.3f;
+ 
 
 
     public Vector2 moveDir;
-    public static float distance;
+
     public float waitTime;
     public float moveTime;
+    public float attactwaittime;
+    public float attacktime;
+    public float attackendtime;
+
+    public float distance_findPlayer;
+
+    public float distance_back,distance_attack;
+    public float distance; 
+
+
+    public bool startattack,endattack,finishattack,completeattact;
 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        //moveDir = transform.position;
+        roomposition = transform.position;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-
+        if (healthBar.health > 0)
+        {
+            distance = Vector2.Distance(transform.position, PlayerControler.position);
             if (health > 0)
             {
                 if (!ishurt)
                 {
                     Ai();
-
-                    SwitchAnim();
                 }
                 else
                 {
@@ -54,78 +66,180 @@ public class goblin : MonoBehaviour
                     gameObject.GetComponent<BoxCollider2D>().enabled = false;
                 }
             }
-    }
-
-    //trigger检测
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (health > 0)
-        {
-
         }
+        else
+        {
+            Walk();
+            
+            SwitchAnim();
+        }
+
     }
 
+
+void Walk()
+    {
+        weapon.GetComponent<spear>().Remake();
+
+
+
+        //向随机生成的坐标移动
+       
+        transform.position = Vector2.MoveTowards(transform.position, moveDir, speed * Time.deltaTime);
+        if (moveTime > 0)
+        {
+            if (Vector2.Distance(transform.position, moveDir) < 0.1f)//到达随机生成的位置
+            {
+                if (waitTime <= 0)//原地等待时间结束
+                {
+                    //            //重新生成下一个坐标
+                    moveDir = new Vector2(roomposition.x + Random.Range(-7.5f, 7.5f), roomposition.y + Random.Range(-7.5f, 7.5f));
+                    moveTime = Random.Range(4,7);
+                    waitTime = Random.Range(2, 3);
+                }
+                else
+                {
+                    waitTime -= Time.deltaTime;
+                }
+            }
+            else
+            {
+                moveTime -= Time.deltaTime;
+            }
+        }
+        else//超时生成下一个位置
+        {
+            moveDir = new Vector2(roomposition.x + Random.Range(-8, 8), roomposition.y + Random.Range(-8, 8));
+            moveTime = 3;
+        } 
+
+    }
+
+
+    void FindPlayer()
+    {
+        weapon.GetComponent<spear>().ToPlayer();
+        moveDir = new Vector2(PlayerControler.position.x, PlayerControler.position.y);
+        transform.position = Vector2.MoveTowards(transform.position, moveDir, speedrun * Time.deltaTime);
+    }
 
     //敌人ai
     void Ai()
     {
-        distance = Vector2.Distance(transform.position, player.position);
-        if (distance > 8f)
+        if (finishattack)
         {
-            weapon.GetComponent<spear>().Remake();
 
-            //向随机生成的坐标移动
-            transform.position = Vector2.MoveTowards(transform.position, moveDir, speed * Time.deltaTime);
-            if (moveTime > 0)
+            if (distance > distance_findPlayer)
             {
-                if (Vector2.Distance(transform.position, moveDir) < 0.1f)//到达随机生成的位置
+                Walk();
+
+                SwitchAnim();
+            }
+        }
+
+        if (distance <= distance_findPlayer)//向玩家移动
+        {
+
+            if (finishattack)
+            {
+                if (distance >= distance_back)
                 {
-                    if (waitTime <= 0)//原地等待时间结束
+
+                    FindPlayer();
+                    SwitchAnim();
+                }
+
+                if (distance <= distance_attack)
+                {
+                    moveDir = new Vector2(-PlayerControler.position.x - distance_back, -PlayerControler.position.y - distance_back);
+                    transform.position = Vector2.MoveTowards(transform.position, moveDir, speed * 2 * Time.deltaTime);
+
+
+                    if (PlayerControler.position.x < transform.position.x)
+                        transform.localScale = new Vector3(-1, 1, 1);
+                    if (PlayerControler.position.x < transform.position.x)
+                        transform.localScale = new Vector3(1, 1, 1);
+                }
+
+
+                    if (attactwaittime <= 0)
                     {
-                        //重新生成下一个坐标
-                        moveDir = new Vector2((transform.position.x + Random.Range(-10, 10)), (transform.position.y + Random.Range(-10, 10)));
-                        moveTime = 3;
-                        waitTime = Random.Range(1, 2);
+                        moveDir = PlayerControler.position;
+                        startattack = true;
+                        finishattack = false;
                     }
                     else
                     {
-                        waitTime -= Time.deltaTime;
+                        attactwaittime -= Time.deltaTime;
                     }
                 }
-            }
-            else//超时生成下一个位置
-            {
-                moveDir = new Vector2((transform.position.x + Random.Range(-10, 10)) * speed * Time.deltaTime, (transform.position.y + Random.Range(-10, 10)) * speed * Time.deltaTime);
-                moveTime = 3;
-            }
-            moveTime -= Time.deltaTime;
-        }
-        else if (distance <= 8f )//向玩家移动
-        {
-            if (healthBar.health > 0)
-            {
-                if (distance > 1.8f)
-            {
-                weapon.GetComponent<spear>().ToPlayer();
-                moveDir = new Vector2(player.position.x, player.position.y);
-                transform.position = Vector2.MoveTowards(transform.position, moveDir, speedrun * Time.deltaTime);
-            }
 
-                if (distance <= 2.5f)
+        }
+
+
+        Attack();   
+    }
+
+
+    public void Attack()
+    {
+        if (startattack) {
+            transform.position = Vector2.MoveTowards(transform.position, moveDir, speedrun * Time.deltaTime);
+            SwitchAnim();
+            if (attackendtime > 0)
+            {
+                if (Vector2.Distance(transform.position, moveDir) < 0.1f || distance <= distance_attack)
                 {
-                    if (attacttime <= 0)
-                    {
-                        weapon.GetComponent<spear>().Attack();
-                        attacttime = 2;
-                    }
-                    else
-                    {
-                        attacttime -= Time.deltaTime;
-                    }
+                    completeattact = true;
                 }
 
+                if (completeattact) {
+                    Debug.Log("sb");
+
+                    weapon.GetComponent<Animator>().SetFloat("attack",attacktime);
+
+
+                    if (attacktime <= 0)
+                    {
+                        startattack = false;
+                        endattack = true;
+                        attacktime = 0.5f;
+                        attackendtime = 2;
+                        completeattact = false;
+                    }
+                    attacktime -= Time.deltaTime;
+                }
+                
+                attackendtime -= Time.deltaTime;
+
+            }
+            else
+            {
+                startattack = false;
+                endattack = true;
+                attacktime = 0.1f;
+                attackendtime = 2;
+            }
+           
+        }
+
+        if (endattack) { 
+        moveDir = new Vector2(-PlayerControler.position.x- distance_back, -PlayerControler.position.y - distance_back);
+        transform.position = Vector2.MoveTowards(transform.position, moveDir, speedrun  * Time.deltaTime);
+            
+            if(PlayerControler.position.x<transform.position.x)
+                transform.localScale = new Vector3(-1, 1, 1);
+            if (PlayerControler.position.x < transform.position.x)
+                transform.localScale = new Vector3(1, 1, 1);
+
+            if (distance >= distance_back)
+            {
+                attactwaittime = 2;
+                endattack = false;
+                finishattack = true;
             }
         }
+
     }
 
     //跑动动画
@@ -133,19 +247,20 @@ public class goblin : MonoBehaviour
         //改变动画
         if (Vector2.Distance(transform.position, moveDir) > 0.1f)
         {
-            anim.SetTrigger("running");
+            anim.SetFloat("running", Mathf.Abs(Vector2.Distance(moveDir,transform.position)));
         }
 
         //改变人物朝向
-        if (transform.position.x > moveDir.x)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        else if (transform.position.x < moveDir.x)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
+            if (transform.position.x > moveDir.x)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else if (transform.position.x < moveDir.x)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
     }
+
 
     //关闭受伤判定
     void SwitchHurtAnim()
@@ -199,6 +314,15 @@ public class goblin : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+    }
+
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "map")
+        {
+            roomposition = collision.transform.position;
+        }
     }
 
 }

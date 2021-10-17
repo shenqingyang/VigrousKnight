@@ -7,19 +7,19 @@ public class healthBar : MonoBehaviour
 {
     public Text text;
     public static int health;
-    public static int max=5;
     private Image healthbar;
     // Start is called before the first frame update
     void Start()
     {
+        health =PlayerControler.maxhealth;
+        DontDestroyOnLoad(this);
         healthbar = GetComponent<Image>();
-        health = max;
     }
 
     // Update is called once per frame
     void Update()
     {
-        healthbar.fillAmount = (float)health / (float)max;
-        text.text = health.ToString() + "/" + max.ToString();
+        healthbar.fillAmount = (float)health / (float)PlayerControler.maxhealth;
+        text.text = health.ToString() + "/" + PlayerControler.maxhealth.ToString();
     }
 }

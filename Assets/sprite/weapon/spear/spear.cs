@@ -8,8 +8,6 @@ public class spear : MonoBehaviour
     public static int damage = 4;
     private Animator anim;
     private Transform ts;
-    public Transform player;
-    public float attackTime;
     public BoxCollider2D coll;
     // Start is called before the first frame update
     void Start()
@@ -31,7 +29,7 @@ public class spear : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
                 //给玩家伤害
-                collision.gameObject.GetComponent<PlayerControler>().TakeDamage(damage);
+                collision.gameObject.GetComponent<PlayerControler>().  TakeDamage(damage);
 
             //给玩家受伤动画
             collision.gameObject.GetComponent<PlayerControler>().HurtAnim(ts);
@@ -47,13 +45,12 @@ public class spear : MonoBehaviour
     public void Attack()
     {
         anim.SetTrigger("attack");
-
     }
 
     //指向玩家
     public void ToPlayer()
     {
-        Vector2 dir = player.position - ts.position;
+        Vector2 dir = PlayerControler.position - ts.position;
         transform.up = dir;
         transform.Rotate(0,0,90);
     }

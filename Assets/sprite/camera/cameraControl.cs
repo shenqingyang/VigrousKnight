@@ -4,9 +4,23 @@ using UnityEngine;
 
 public class cameraControl : MonoBehaviour
 {
-    public Transform player;
-    void Update()
+    public static bool hurt;
+    private void Start()
     {
-        transform.position = new Vector3(player.position.x, player.position.y, -10f);
     }
+
+
+    void FixedUpdate()
+    {
+        if (hurt)
+        {
+            GetComponent<Animator>().SetTrigger("shake");
+            hurt = false;
+        }
+        transform.position =new Vector3(PlayerControler.position.x,PlayerControler.position.y,-10);
+    }
+
+
 }
+
+
