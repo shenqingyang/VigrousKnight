@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 486386946046570716}
   - component: {fileID: 486386946046570718}
-  - component: {fileID: 486386946046570717}
   m_Layer: 0
   m_Name: plasma
   m_TagString: Untagged
@@ -83,24 +82,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &486386946046570717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 486386946046570707}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66e746d4343ea064db23bb2fce521935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waittime: 0
-  muzzlepos: {fileID: 486386946754389492}
-  bullet: {fileID: 2734744864725963270, guid: 53d0c3b7670952249861344d32eaee20, type: 3}
-  mouse: {x: 0, y: 0, z: 0}
-  dir: {x: 0, y: 0, z: 0}
-  time: 0
 --- !u!1 &486386946563043470
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,7 +94,7 @@ GameObject:
   - component: {fileID: 486386946563043464}
   m_Layer: 13
   m_Name: plasma
-  m_TagString: Untagged
+  m_TagString: gun
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -146,12 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e746d4343ea064db23bb2fce521935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waittime: 0
+  waittime: 0.3
   muzzlepos: {fileID: 486386946754389492}
   bullet: {fileID: 2734744864725963270, guid: 53d0c3b7670952249861344d32eaee20, type: 3}
   mouse: {x: 0, y: 0, z: 0}
   dir: {x: 0, y: 0, z: 0}
-  time: 0
+  time: 1
+  cost: 1
 --- !u!1 &486386946754389451
 GameObject:
   m_ObjectHideFlags: 0

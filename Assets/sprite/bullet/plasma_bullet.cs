@@ -7,6 +7,7 @@ public class plasma_bullet : MonoBehaviour
     public float speed;
     public Rigidbody2D rd;
     public float existtime;
+    public float damage;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,9 +35,9 @@ public class plasma_bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "wall" || collision.tag == "enemy")
+
+        if (collision.tag == "enemy"||collision.tag=="pile")
         {
-            //collision.GetComponent<enemy>().
             Destroy(gameObject);
         }
     }

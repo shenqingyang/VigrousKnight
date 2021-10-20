@@ -19,6 +19,10 @@ public class energyBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (energy <= 0)
+        {
+            energy = 0;
+        }
         energybar.fillAmount = (float)energy / (float)PlayerControler.maxenergy;
         text.text = energy.ToString() + "/" +PlayerControler.maxenergy.ToString();
     }

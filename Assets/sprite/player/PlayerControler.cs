@@ -5,18 +5,29 @@ using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour
 {
+    public GameObject damageNumUi;
     public static bool tostartroom;
-    public static int maxhealth=6;
+    public static int maxhealth=999;
     public static int maxenergy=180;
     public static int maxshild=5;
-
+    public int weaponnum;
     public Rigidbody2D rb;
     public Animator anim;
     public float speed;
     public static bool ishurt;
-    public Animator camAni;
     private float hurtTime = 0.3f;
     public static Vector3 position;
+    public GameObject[] weapon;
+    public bool skill;
+    public GameObject weaponcopy;
+    public static bool weaponcopy_on;
+    public GameObject fire;
+    public bool handknife;
+    public float waittime;
+    public GameObject Handknife;
+    public string na;
+    public GameObject[] pickweapon;
+    public bool isget;
         // Start is called before the first frame update
 
 
@@ -45,6 +56,16 @@ public class PlayerControler : MonoBehaviour
             if (!ishurt)
             {
                 Movement();
+                SwitchWeapon();
+                if (handknife)
+                {
+                    HandKnife();
+                }
+                else
+                {
+                    Skill();
+                }
+                
             }
             SwitchAnim();
         }
@@ -55,29 +76,6 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
-    
-
-
-    //trigger检测
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "collection" && Input.GetKey(KeyCode.Space))
-        {
-            //破环碰撞物
-            Destroy(collision.gameObject);
-            if (healthBar.health < 5)
-            {
-                healthBar.health += 1;
-            }
-        }
-
-}
-
-    //碰撞检测
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-    }
 
     //人物运动
     void Movement()
@@ -125,6 +123,8 @@ public class PlayerControler : MonoBehaviour
     }
 
 
+
+
     //player受到伤害
     public void TakeDamage(int damage)
     {
@@ -145,6 +145,8 @@ public class PlayerControler : MonoBehaviour
         {
             shildBar.shild -= damage;
         }
+        damageNum damagable = Instantiate(damageNumUi, position, Quaternion.identity).GetComponent<damageNum>();
+        damagable.ShowDamageNum(damage);
     }
 
     //人物受伤后移动与受伤动画与镜头晃动
@@ -178,4 +180,162 @@ public class PlayerControler : MonoBehaviour
         //受伤动画
         anim.SetTrigger("hurt");
     }
+
+    public GameObject FindWeapon(GameObject parent, string name)
+    {
+        GameObject weapon = null;
+        for(int i = 0; i < parent.transform.childCount; i++)
+        {
+            if (parent.transform.GetChild(i).gameObject.name == name)
+            {
+                Debug.Log(i);
+                weapon = parent.transform.GetChild(i).gameObject;
+                break;
+            }
+        }
+        return weapon;
+    }
+
+    void SwitchWeapon() {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            weapon[weaponnum].SetActive(false);
+            if (weaponnum == 0)
+            {
+                weaponnum = 1;
+            }else if(weaponnum == 1)
+            {
+                weaponnum = 0;
+            }
+            weapon[weaponnum].SetActive(true);
+        }
+    
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+
+        if (collision.tag == "pickweapon"&&!isget)
+        {
+            na = collision.name.Replace("(Clone)", "");
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                GameObject change = FindWeapon(this.gameObject,na);
+                if (weapon[1] == null)
+                {
+                    weapon[0].SetActive(false);
+                    weapon[1] = change;
+                    weapon[1].SetActive(true);
+                    weaponnum = 1;
+                }
+                else
+                {
+                    int i = 0;
+                    na = weapon[weaponnum].name;
+                    for (; i < this.gameObject.transform.childCount; i++)
+                    {
+                        if (this.gameObject.transform.GetChild(i).gameObject.name == na)
+                        {
+                            break;
+                        }
+                    }
+                    GameObject weapon_recent = Instantiate(pickweapon[i], collision.transform.position, Quaternion.identity);
+                    weapon[weaponnum].SetActive(false);
+                    weapon[weaponnum] = change;
+                    weapon[weaponnum].SetActive(true);
+                    weapon_recent.SetActive(true);
+                }
+                isget = true;
+                Destroy(collision.gameObject);
+            }
+        }
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        isget = false;
+        if (collision.tag == "enemy"&&weapon[0].tag=="gun")
+        {
+            handknife = true;
+            weapon[weaponnum].SetActive(false);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "enemy"&&weapon[0].tag=="gun")
+        {
+            handknife = false;
+            weapon[weaponnum].SetActive(true);
+        }
+    }
+
+    public void Skill()
+    {
+        if (skillUI.waittime == 5) {
+            if (Input.GetButton("Fire2"))
+            {
+                skill = true;
+            }
+
+            if (skill)
+            {
+                if (weapon[weaponnum].tag == "gun")
+                {
+                    if (!weaponcopy_on)
+                    {
+                        weaponcopy = GameObject.Instantiate(weapon[weaponnum], position, Quaternion.identity);
+                        weaponcopy.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "Default";
+                        weaponcopy.transform.localScale = transform.localScale;
+                        weaponcopy.transform.SetParent(transform);
+                        weaponcopy.transform.position = new Vector3(weaponcopy.transform.position.x + 0.5f, weaponcopy.transform.position.y - 0.45f, weaponcopy.transform.position.z);
+                        weaponcopy_on = true;
+                    }
+                    fire.SetActive(true);
+                    if (skillUI.skilltime > 0)
+                    {
+                        skillUI.skilltime -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        Destroy(weaponcopy);
+                        fire.SetActive(false);
+                        skill = false;
+                        weaponcopy_on = false;
+                        skillUI.skilltime = 3;
+                        skillUI.waittime = 0;
+                    }
+                }
+            }
+        }
+        else
+        {
+            skillUI.waittime += Time.deltaTime;
+            if (skillUI.waittime >= 5)
+            {
+                skillUI.waittime = 5;
+            }
+        }
+
+    }
+
+    public void HandKnife()
+    {
+       if (waittime > 0)
+        {
+            waittime -= Time.deltaTime;
+        }
+
+
+        if (Input.GetButton("Fire1"))
+        {
+            if (waittime <= 0)
+            {
+                Handknife.SetActive(true);
+                waittime = 0.2f;
+            }
+        }
+    }
+
 }

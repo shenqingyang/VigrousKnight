@@ -5,7 +5,7 @@ using UnityEngine;
 public class goblin : MonoBehaviour
 {
     public  Vector2 roomposition;
-    public static int health=5;
+    public int health=5;
     public float speed;
     public float speedrun;
     public GameObject weapon;
@@ -13,6 +13,11 @@ public class goblin : MonoBehaviour
     public Rigidbody2D rb;
     private bool ishurt;
     private float hurtTime=0.3f;
+    public GameObject damageNumUi;
+    public GameObject dieimage;
+    public float dietime;
+    public bool hurttofind;
+    public float hurttofindtime;
  
 
 
@@ -31,12 +36,13 @@ public class goblin : MonoBehaviour
 
 
     public bool startattack,endattack,finishattack,completeattact;
+    public GameObject coin;
+    public GameObject energy;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //moveDir = transform.position;
         roomposition = transform.position;
     }
 
@@ -54,16 +60,52 @@ public class goblin : MonoBehaviour
                 }
                 else
                 {
+                    hurttofind = true;
                     SwitchHurtAnim();
                 }
+
+              
             }
             else
             {
                 anim.SetTrigger("die");
                 gameObject.GetComponent<Rigidbody2D>().drag = 1;
-                if (gameObject.GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+                if (dietime <= 0) { 
+                    Instantiate(dieimage, transform.position, Quaternion.identity);
+                    for (int i = 0; i < Random.Range(2, 6); i++)
+                    {
+                        Vector2 coinpos = new Vector2(transform.position.x + Random.Range(-0.5f, 0.5f), transform.position.y + Random.Range(-0.5f, 0.5f));
+                        Instantiate(coin, coinpos, Quaternion.identity);
+                    }
+                    for (int i = 0; i < Random.Range(2, 6); i++)
+                    {
+                        Vector2 energypos = new Vector2(transform.position.x + Random.Range(-0.5f, 0.5f), transform.position.y + Random.Range(-0.5f, 0.5f));
+                        Instantiate(energy, energypos, Quaternion.identity);
+                    }
+                    dieimage.transform.localScale = transform.localScale;
+                    Destroy(gameObject);
+                }
+                else
                 {
-                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    dietime -= Time.deltaTime;
+                }
+             
+            }
+            if (hurttofind)
+            {
+                if (hurttofindtime > 0)
+                {
+                    FindPlayer();
+                    SwitchAnim();
+                    if (distance <= distance_findPlayer)
+                    {
+                        hurttofind = false; 
+                    }
+                    hurttofindtime -= Time.deltaTime;
+                }
+                else
+                {
+                    hurttofind = false;
                 }
             }
         }
@@ -93,7 +135,7 @@ void Walk()
                 if (waitTime <= 0)//原地等待时间结束
                 {
                     //            //重新生成下一个坐标
-                    moveDir = new Vector2(roomposition.x + Random.Range(-7.5f, 7.5f), roomposition.y + Random.Range(-7.5f, 7.5f));
+                    moveDir = new Vector2(roomposition.x + Random.Range(-7, 7), roomposition.y + Random.Range(-7, 7));
                     moveTime = Random.Range(4,7);
                     waitTime = Random.Range(2, 3);
                 }
@@ -109,7 +151,7 @@ void Walk()
         }
         else//超时生成下一个位置
         {
-            moveDir = new Vector2(roomposition.x + Random.Range(-8, 8), roomposition.y + Random.Range(-8, 8));
+            moveDir = new Vector2(roomposition.x + Random.Range(-7, 7), roomposition.y + Random.Range(-7, 7));
             moveTime = 3;
         } 
 
@@ -158,7 +200,7 @@ void Walk()
                     if (PlayerControler.position.x < transform.position.x)
                         transform.localScale = new Vector3(-1, 1, 1);
                     if (PlayerControler.position.x < transform.position.x)
-                        transform.localScale = new Vector3(1, 1, 1);
+                        transform.localScale = new Vector3(-1, 1, 1);
                 }
 
 
@@ -194,7 +236,6 @@ void Walk()
                 }
 
                 if (completeattact) {
-                    Debug.Log("sb");
 
                     weapon.GetComponent<Animator>().SetFloat("attack",attacktime);
 
@@ -254,11 +295,11 @@ void Walk()
             if (transform.position.x > moveDir.x)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
-            }
+        }
             else if (transform.position.x < moveDir.x)
             {
                 transform.localScale = new Vector3(1, 1, 1);
-            }
+        }
     }
 
 
@@ -322,6 +363,30 @@ void Walk()
         if (collision.gameObject.tag == "map")
         {
             roomposition = collision.transform.position;
+        }
+
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (health > 0)
+        {
+            if (collision.gameObject.tag == "bullet")
+            {
+                TakeDamage(collision.gameObject.GetComponent<bulletinformation>().damage);
+                HurtAnim(collision.gameObject.transform);
+                damageNum damagable = Instantiate(damageNumUi, collision.gameObject.transform.position, Quaternion.identity).GetComponent<damageNum>();
+                damagable.ShowDamageNum(collision.gameObject.GetComponent<bulletinformation>().damage);
+            }
+
+            if (collision.gameObject.tag == "weapon")
+            {
+                TakeDamage(collision.gameObject.GetComponent<weaponinformation>().damage);
+                HurtAnim(collision.gameObject.transform);
+                damageNum damagable = Instantiate(damageNumUi, collision.gameObject.transform.position, Quaternion.identity).GetComponent<damageNum>();
+                damagable.ShowDamageNum(collision.gameObject.GetComponent<weaponinformation>().damage);
+            }
         }
     }
 

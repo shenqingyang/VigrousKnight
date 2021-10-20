@@ -25,7 +25,7 @@ public class door : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            OpenWall();     
+            OpenWall();
         }
     }
 

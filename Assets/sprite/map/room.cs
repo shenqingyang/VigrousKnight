@@ -12,9 +12,15 @@ public class room : MonoBehaviour
     public int passagenum;
     public BoxCollider2D trigger;
     public BoxCollider2D coll;
+    public GameObject wall_floor;
+    public GameObject box;
+    public bool Creatbox;
+    public  bool isnb;
 
     [Header("敌人")]
     public GameObject[] enemy;
+    [Header("精英怪")]
+    public GameObject[] enemy_nb;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,12 +31,20 @@ public class room : MonoBehaviour
         passageleft.SetActive(left);
         passageright.SetActive(right);
         passageup.SetActive(up);
+        coll.enabled = false;
+        wall_floor.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+    if(CreatEnemyTerm==0&& GameObject.FindGameObjectWithTag("enemy") == null && !Creatbox)
+        {
+                Vector2 move = new Vector2(transform.position.x + Random.Range(-6.5f, 6.5f), transform.position.y + Random.Range(-6.5f, 6.5f));
+                Instantiate(box, move, Quaternion.identity);
+                Creatbox = true;
 
+        }
     }
 
 
@@ -38,10 +52,12 @@ public class room : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-                if (GameObject.FindGameObjectWithTag("enemy") == null&&passagenum !=1)
+            wall_floor.SetActive(true);
+            if (GameObject.FindGameObjectWithTag("enemy") == null&&passagenum !=1)
                 {
                 CreateEnemy();
             }
+               
         }
 
     }
@@ -52,11 +68,29 @@ public class room : MonoBehaviour
     {
         if (CreatEnemyTerm > 0)
         {
-            //生成近战哥布林
-            for (int i = 0; i < Random.Range(4, 6); i++)
+            if (isnb)
             {
-                Vector2 move = new Vector2(transform.position.x + Random.Range(-7, 7), transform.position.y + Random.Range(-7, 7));
-                Instantiate(enemy[Random.Range(0,enemy.Length)], move, Quaternion.identity);
+                //生成
+                for (int i = 0; i < Random.Range(3, 5); i++)
+                {
+                    Vector2 move = new Vector2(transform.position.x + Random.Range(-6.5f, 6.5f), transform.position.y + Random.Range(-6.5f, 6.5f));
+                    Instantiate(enemy_nb[Random.Range(0, enemy_nb.Length)], move, Quaternion.identity);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Random.Range(3, 5); i++)
+                {
+                    Vector2 move = new Vector2(transform.position.x + Random.Range(-6.5f, 6.5f), transform.position.y + Random.Range(-6.5f, 6.5f));
+                    Instantiate(enemy[Random.Range(0, enemy.Length)], move, Quaternion.identity);
+                }
+
+                for(int i = 0; i < Random.Range(0, 1); i++)
+                {
+                    Vector2 move = new Vector2(transform.position.x + Random.Range(-6.5f, 6.5f), transform.position.y + Random.Range(-6.5f, 6.5f));
+                    Instantiate(enemy_nb[Random.Range(0, enemy_nb.Length)], move, Quaternion.identity);
+                }
+               
             }
             CreatEnemyTerm -= 1;
         }

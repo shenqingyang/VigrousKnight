@@ -25,7 +25,7 @@ public class gate : MonoBehaviour
             { 
                 SceneManager.LoadScene("load");
 
-                if (SceneManager.GetActiveScene().name == "1-1")
+                if (SceneManager.GetActiveScene().name == "1-5")
                 {
                     SceneManager.LoadScene("complete");
                 }

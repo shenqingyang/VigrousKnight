@@ -12,6 +12,13 @@ TagManager:
   - map
   - bullet
   - wall
+  - die
+  - pile
+  - gun
+  - enemy_bullet
+  - door
+  - enemy_weapon
+  - pickweapon
   layers:
   - Default
   - TransparentFX
@@ -58,11 +65,14 @@ TagManager:
   - name: door
     uniqueID: 3636626725
     locked: 0
+  - name: enemy
+    uniqueID: 2813336285
+    locked: 0
   - name: object
     uniqueID: 2446706163
     locked: 0
-  - name: enemy
-    uniqueID: 2813336285
+  - name: weapon
+    uniqueID: 3230075875
     locked: 0
   - name: player
     uniqueID: 912087401

@@ -200,22 +200,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312755574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 16.4, y: 10.9, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &8230637428355639865
+--- !u!1001 &1293936507
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 857635141423612385, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054017629848183929, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
+      propertyPath: weapon.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941514855305154077, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
+      propertyPath: m_SortingLayer
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941514855305154077, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1064891421
+      objectReference: {fileID: 0}
     - target: {fileID: 8230637429830879491, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
       propertyPath: m_Name
       value: playUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8230637429830879491, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8230637429830879494, guid: 5418190cdec43dc4c979cc411f8f4ecc, type: 3}
       propertyPath: m_Pivot.x

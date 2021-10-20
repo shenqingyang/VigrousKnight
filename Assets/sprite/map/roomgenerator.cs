@@ -16,6 +16,10 @@ public class roomgenerator : MonoBehaviour
     public int maxstep;
     public  static Vector2 startposition;
 
+    public float maxX, minX, maxY, minY;
+    public GameObject smallmap;
+
+
 
     [Header("房间信息")]
     public GameObject roomprefab;
@@ -30,10 +34,17 @@ public class roomgenerator : MonoBehaviour
 
     public wall wall;
     [Header("装饰")]
-    public Decoration decoration;
+    public GameObject[] decoration;
+    [Header("奖励")]
+    public GameObject[] reward;
+    public GameObject box_weapon;
     // Start is called before the first frame update
     void Awake()
     {
+        maxX = -9999;
+        maxY = -9999;
+        minX = 9999;
+        minY = 9999;
         //随机生成地图
         CreatMap();
 
@@ -44,16 +55,17 @@ public class roomgenerator : MonoBehaviour
         //以初始地图为基准重新计算每个地图到达初始地图的距离
         foreach (var room in rooms)
         {
+
+            maxX = maxX > room.gameObject.transform.position.x ? maxX : room.gameObject.transform.position.x;
+            minX = minX < room.gameObject.transform.position.x ? minX : room.gameObject.transform.position.x;
+            maxY = maxY > room.gameObject.transform.position.y ? maxY : room.gameObject.transform.position.y;
+            minY = minY < room.gameObject.transform.position.y ? minY : room.gameObject.transform.position.y;
+
             room.UpdateRoom(startroom.transform.position.x, startroom.transform.position.y);
         }
         
         //找到一个距离初始点最远的且只有一个通道的地图作为终点
         Findendroom();
-
-        foreach (var room in rooms)
-        {
-            room.coll.enabled = false;
-        }
 
         PlayerControler.tostartroom = true;
 
@@ -61,6 +73,8 @@ public class roomgenerator : MonoBehaviour
         {
             rooms.Remove(oneway[i]);
         }
+
+        Putcamera();
 
         CreateDecoration();
 
@@ -71,7 +85,7 @@ public class roomgenerator : MonoBehaviour
     {
 
         if (Input.GetKeyDown(KeyCode.P)){
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
     }
@@ -198,12 +212,21 @@ public class roomgenerator : MonoBehaviour
                     oneway.Add(lessfar[i]);
             }
 
-            endroom = oneway[Random.Range(0, oneway.Count)];
+            for(int i = 0; i < rooms.Count; i++)
+        {
+            if (rooms[i].GetComponent<room>().passagenum == 1)
+            {
+                rooms.Remove(rooms[i]);
+            }
+        }
 
+        endroom = oneway[Random.Range(0, oneway.Count)];
         oneway.Remove(endroom);
         oneway.Remove(startroom);
-
-        }
+        rooms.Remove(startroom);
+        rooms.Remove(endroom);
+        rooms[Random.Range(0, rooms.Count)].isnb = true;
+    }
 
     //生成地图
     public void CreatMap()
@@ -228,6 +251,7 @@ public class roomgenerator : MonoBehaviour
             if (rooms[i].GetComponent<room>().passagenum == 1)
             {
                 oneway.Add(rooms[i]);
+
             }
         }
 
@@ -259,8 +283,23 @@ public class roomgenerator : MonoBehaviour
 
     public void CreateDecoration()
     {
-        Instantiate(decoration.gate, endroom.transform.position, Quaternion.identity);
+        int rewardroom = Random.Range(0, rooms.Count);
+        //end
+        Instantiate(decoration[0], endroom.transform.position, Quaternion.identity);
 
+        Instantiate(reward[Random.Range(0,1)], oneway[0].transform.position, Quaternion.identity);
+        Instantiate(box_weapon, rooms[rewardroom].transform.position, Quaternion.identity);
+        rooms.Remove(rooms[rewardroom]);
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            Instantiate(decoration[Random.Range(1, 8)], rooms[i].transform.position, Quaternion.identity);
+        }
+    }
+    public void Putcamera()
+    {;
+        float positionX = (maxX + minX) / 2;
+        float positionY = (maxY + minY) / 2;
+        smallmap.transform.position = new Vector3(positionX, positionY,-10);
     }
 
 }
@@ -274,10 +313,4 @@ public class wall
         two_up_left, two_up_right, two_up_down, two_right_left, two_down_left, two_down_right,
         three_up_down_left, three_up_down_right, three_right_left_down, three_right_left_up,
         four_up_down_left_right;
-}
-
-[System.Serializable]
-public class Decoration {
-
-    public GameObject gate;
 }

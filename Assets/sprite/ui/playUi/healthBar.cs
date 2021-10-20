@@ -12,7 +12,6 @@ public class healthBar : MonoBehaviour
     void Start()
     {
         health =PlayerControler.maxhealth;
-        DontDestroyOnLoad(this);
         healthbar = GetComponent<Image>();
     }
 

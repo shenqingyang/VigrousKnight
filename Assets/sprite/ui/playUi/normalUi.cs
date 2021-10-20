@@ -19,6 +19,7 @@ public class normalUi : MonoBehaviour
     void Awake()
     {
         Ui = UI1;
+        coinUi.coinnum = 0;
         healthBar.health = PlayerControler.maxhealth;
         energyBar.energy = PlayerControler.maxenergy;
         shildBar.shild = PlayerControler.maxshild;
@@ -41,6 +42,7 @@ void Start()
         }
 
         if (start) {
+            coinUi.coinnum = 0;
             healthBar.health = PlayerControler.maxhealth;
             energyBar.energy = PlayerControler.maxenergy;
             shildBar.shild = PlayerControler.maxshild;
