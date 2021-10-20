@@ -16,6 +16,7 @@ public class room : MonoBehaviour
     public GameObject box;
     public bool Creatbox;
     public  bool isnb;
+    public bool Creatweaponbox;
 
     [Header("µ–»À")]
     public GameObject[] enemy;
@@ -38,7 +39,7 @@ public class room : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    if(CreatEnemyTerm==0&& GameObject.FindGameObjectWithTag("enemy") == null && !Creatbox)
+    if(CreatEnemyTerm==0&& GameObject.FindGameObjectWithTag("enemy") == null && !Creatbox&&!Creatweaponbox)
         {
                 Vector2 move = new Vector2(transform.position.x + Random.Range(-6.5f, 6.5f), transform.position.y + Random.Range(-6.5f, 6.5f));
                 Instantiate(box, move, Quaternion.identity);
@@ -53,7 +54,7 @@ public class room : MonoBehaviour
         if (collision.tag == "Player")
         {
             wall_floor.SetActive(true);
-            if (GameObject.FindGameObjectWithTag("enemy") == null&&passagenum !=1)
+            if (GameObject.FindGameObjectWithTag("enemy") == null&&passagenum !=1&&!Creatweaponbox)
                 {
                 CreateEnemy();
             }

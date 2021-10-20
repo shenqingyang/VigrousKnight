@@ -132,7 +132,7 @@ public class goblin_witch : MonoBehaviour
                 if (waitTime <= 0)//原地等待时间结束
                 {
                     //            //重新生成下一个坐标
-                    moveDir = new Vector2(roomposition.x + Random.Range(-7, 7), roomposition.y + Random.Range(-7, 7));
+                    moveDir = new Vector2(roomposition.x + Random.Range(-6, 6), roomposition.y + Random.Range(-6, 6));
                     moveTime = Random.Range(4, 7);
                     waitTime = Random.Range(2, 3);
                 }
@@ -148,7 +148,7 @@ public class goblin_witch : MonoBehaviour
         }
         else//超时生成下一个位置
         {
-            moveDir = new Vector2(roomposition.x + Random.Range(-7, 7), roomposition.y + Random.Range(-7, 7));
+            moveDir = new Vector2(roomposition.x + Random.Range(-6, 6), roomposition.y + Random.Range(-6, 6));
             moveTime = 3;
         }
 
@@ -184,7 +184,7 @@ public class goblin_witch : MonoBehaviour
                 if (distance <= distance_attack)
                 {
                     moveDir = new Vector2(-PlayerControler.position.x - distance_attack, -PlayerControler.position.y - distance_attack);
-                    transform.position = Vector2.MoveTowards(transform.position, moveDir, speed * 2 * Time.deltaTime);
+                    transform.position = Vector2.MoveTowards(transform.position, moveDir, speed  * Time.deltaTime);
 
 
                     if (PlayerControler.position.x < transform.position.x)

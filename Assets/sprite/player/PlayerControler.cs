@@ -7,7 +7,7 @@ public class PlayerControler : MonoBehaviour
 {
     public GameObject damageNumUi;
     public static bool tostartroom;
-    public static int maxhealth=999;
+    public static int maxhealth=6;
     public static int maxenergy=180;
     public static int maxshild=5;
     public int weaponnum;
@@ -188,7 +188,6 @@ public class PlayerControler : MonoBehaviour
         {
             if (parent.transform.GetChild(i).gameObject.name == name)
             {
-                Debug.Log(i);
                 weapon = parent.transform.GetChild(i).gameObject;
                 break;
             }

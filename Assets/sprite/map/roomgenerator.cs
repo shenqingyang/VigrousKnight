@@ -289,6 +289,7 @@ public class roomgenerator : MonoBehaviour
 
         Instantiate(reward[Random.Range(0,1)], oneway[0].transform.position, Quaternion.identity);
         Instantiate(box_weapon, rooms[rewardroom].transform.position, Quaternion.identity);
+        rooms[rewardroom].Creatweaponbox = true;
         rooms.Remove(rooms[rewardroom]);
         for (int i = 0; i < rooms.Count; i++)
         {
